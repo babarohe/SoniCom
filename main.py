@@ -10,15 +10,15 @@ import wave
 import numpy as np
 import matplotlib.pylab as plt
 
-from ecc.rsc import DataProcessor
+from issb.presentation import Presentation
 
 S_RATE      = 44100
 CHUNK_TIME  = 256
 CENTER_FREQ = 2000
 
 def main():
-    dp = DataProcessor()
-    packed_data = dp.pack("Hello".encode())
+    dp = Presentation()
+    packed_data = dp.pack("お互いが参照・被参照関係にあるレイヤによるモデルであり、上位層は下位層に対して抽象化されている。ぽきたま剤ンゴオ、ありえん良さ味が深い。".encode())
 
     swav = []
 
@@ -56,9 +56,7 @@ def main():
 
     swav = multiplex(l1, l2, l3, l4, l5, l6, l7, l8)
 
-    plt.plot(swav[:1024])
 
-    pcm_wav = to_pcm_struct(swav, fs=S_RATE)
 
     fm_wav = []
 
@@ -68,8 +66,10 @@ def main():
 
         fm_wav.append(f_buf)
 
-    plt.plot(fm_wav[:1024])
-    plt.show()
+    pcm_wav = to_pcm_struct(swav, fs=S_RATE)
+    # plt.plot(swav[500:600])
+    # plt.plot(fm_wav[500:1500])
+    # plt.show()
 
 
     #バイナリ化

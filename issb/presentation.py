@@ -3,7 +3,7 @@ import reedsolo
 import struct
 
 
-class DataProcessor(object):
+class Presentation(object):
     def __init__(self, protocol=1):
 
 
