@@ -11,6 +11,8 @@ import numpy as np
 import matplotlib.pylab as plt
 
 from issb.presentation import Presentation
+from issb.signal_generator import SignalGenerator
+
 
 S_RATE      = 44100
 CHUNK_TIME  = 256
@@ -18,55 +20,20 @@ CENTER_FREQ = 2000
 
 def main():
     dp = Presentation()
-    packed_data = dp.pack("お互いが参照・被参照関係にあるレイヤによるモデルであり、上位層は下位層に対して抽象化されている。ぽきたま剤ンゴオ、ありえん良さ味が深い。".encode())
+    packed_data = dp.pack("0".encode())
 
-    swav = []
-
-    l1 = []
-    l2 = []
-    l3 = []
-    l4 = []
-    l5 = []
-    l6 = []
-    l7 = []
-    l8 = []
+    sg = SignalGenerator(1200)
+    stream = sg.generate(packed_data)
 
 
-
-    for c in packed_data:
-        d1 = c & 0x80
-        d2 = c & 0x40
-        d3 = c & 0x20
-        d4 = c & 0x10
-        d5 = c & 0x08
-        d6 = c & 0x04
-        d7 = c & 0x02
-        d8 = c & 0x01
-
-
-        l1.extend(create_line_signal(d1, 0, a=0.2, cf=CENTER_FREQ, fs=S_RATE))
-        l2.extend(create_line_signal(d2, 1, a=0.2, cf=CENTER_FREQ, fs=S_RATE))
-        l3.extend(create_line_signal(d3, 2, a=0.2, cf=CENTER_FREQ, fs=S_RATE))
-        l4.extend(create_line_signal(d4, 3, a=0.2, cf=CENTER_FREQ, fs=S_RATE))
-        l5.extend(create_line_signal(d5, 4, a=0.2, cf=CENTER_FREQ, fs=S_RATE))
-        l6.extend(create_line_signal(d6, 5, a=0.2, cf=CENTER_FREQ, fs=S_RATE))
-        l7.extend(create_line_signal(d7, 6, a=0.2, cf=CENTER_FREQ, fs=S_RATE))
-        l8.extend(create_line_signal(d8, 7, a=0.2, cf=CENTER_FREQ, fs=S_RATE))
-
-
-    swav = multiplex(l1, l2, l3, l4, l5, l6, l7, l8)
-
-
-
-    fm_wav = []
 
     # FM変調
-    for n in np.arange(len(swav)):
-        f_buf = np.sin(2 * np.pi * 2000 * len(swav) + (1000/2000) * swav[n])
+    # for n in np.arange(len(swav)):
+    #     f_buf = np.sin(2 * np.pi * 2000 * len(swav) + (1000/2000) * swav[n])
 
-        fm_wav.append(f_buf)
+    #     fm_wav.append(f_buf)
 
-    pcm_wav = to_pcm_struct(swav, fs=S_RATE)
+    pcm_wav = to_pcm_struct(stream, sg.sampling_rate)
     # plt.plot(swav[500:600])
     # plt.plot(fm_wav[500:1500])
     # plt.show()
