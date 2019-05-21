@@ -20,7 +20,7 @@ CENTER_FREQ = 2000
 
 def main():
     dp = Presentation()
-    packed_data = dp.pack("0".encode())
+    packed_data = dp.pack("HelloWorld".encode())
 
     sg = SignalGenerator(1200)
     stream = sg.generate(packed_data)
@@ -33,7 +33,7 @@ def main():
 
     #     fm_wav.append(f_buf)
 
-    pcm_wav = to_pcm_struct(stream, sg.sampling_rate)
+    pcm_wav = to_pcm_struct(stream, S_RATE)
     # plt.plot(swav[500:600])
     # plt.plot(fm_wav[500:1500])
     # plt.show()

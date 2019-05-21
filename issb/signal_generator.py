@@ -1,10 +1,12 @@
 
 import numpy as np
+import matplotlib.pylab as plt
+
 
 SAMPLING_RATE = 44100
 
 class SignalGenerator():
-    def __init__(self, center_freq, clock_samples=1024, sampling_rate=SAMPLING_RATE):
+    def __init__(self, center_freq, clock_samples=512, sampling_rate=SAMPLING_RATE):
         self._center_freq = center_freq
         self._clock_samples = clock_samples
         self._sampling_rate = sampling_rate
@@ -13,38 +15,52 @@ class SignalGenerator():
     def sampling_rate(self):
         return self._sampling_rate
 
+
     def generate(self, packed_data):
         stream_length = len(packed_data)
 
         data_streams  = self._data_stream_line_spliter(packed_data)
 
+        # plt.plot(data_streams[0][1024:4096])
+        # plt.plot(data_streams[1][1024:4096])
+        # plt.plot(data_streams[2][1024:4096])
+        # plt.plot(data_streams[3][1024:4096])
+        # plt.plot(data_streams[4][1024:4096])
+        # plt.plot(data_streams[5][1024:4096])
+        # plt.plot(data_streams[6][1024:4096])
+        # plt.plot(data_streams[7][1024:4096])
+        # plt.show()
+
+
         enable_stream = []
         for _ in range(stream_length):
-            enable_stream.extend(self._generate(True, 2000))
+            enable_stream.extend(self._generate(True, 200))
 
         stream = self._multiplexer(*data_streams)
+
+        plt.plot(stream[1024:4096])
+        plt.show()
+
 
         return stream
 
 
     def _data_stream_line_spliter(self, packed_data):
         band = 8
-        stream = []
+        stream = [[] for _ in range(band)]
 
         for word in packed_data:
-            line_cycle = [None for _ in range(band)]
+
             for l_num in range(band):
                 bit = word & (0x80 >> l_num)
 
-                signal = self._generate(bit, 100 * (l_num * 1.2))
-                line_cycle[l_num] = signal
-
-            stream.append(line_cycle)
+                signal = self._generate(bit, 600 + 10 * (1.5 * l_num))
+                stream[l_num].extend(signal)
 
         return stream
 
 
-    def _generate(self, bit, freq, gain=0.25):
+    def _generate(self, bit, freq, gain=0.2):
         line_signal = [0.0 for _ in range(self._clock_samples)]
 
         if not bit:
